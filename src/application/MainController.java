@@ -1,7 +1,12 @@
 package application;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Logger;
 
+import javax.imageio.ImageIO;
+
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -9,13 +14,9 @@ import javafx.scene.control.Slider;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelReader;
-import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 
 public class MainController {
 
@@ -35,14 +36,46 @@ public class MainController {
     private Slider brightnessSlider;
 	
 	@FXML
+    private Slider contrastSlider;
+	
+	@FXML
     private Slider saturationSlider;
 	
 	@FXML
+    private Button save;
+	
+	@FXML
     void saturationChange(MouseEvent event) {
-		double saturation = saturationSlider.getValue() / 100;
+		double saturation = saturationSlider.getValue() / 500;
 		path.setText(Double.toString(saturation));
 		ColorAdjust colorAdjust = new ColorAdjust();
 		colorAdjust.setSaturation(saturation);
+		viewer.setEffect(colorAdjust);
+	}
+	
+	@FXML
+    void saveFile(MouseEvent event) {
+		path.setText("clicked on save");
+		FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Image");        
+        File file = fileChooser.showSaveDialog(ap.getScene().getWindow());
+        if (file != null) {
+            try {
+                //ImageIO.write(SwingFXUtils.fromFXImage(viewer.getImage(),
+            	ImageIO.write(SwingFXUtils.fromFXImage(viewer.getImage(),
+                        null), "png", file);
+            } catch (IOException ex) {
+                System.out.println("nope");
+            }
+        }
+    }
+	
+	@FXML
+    void contrastChange(MouseEvent event) {
+		double contrast = contrastSlider.getValue() / 2000;
+		path.setText(Double.toString(contrast));
+		ColorAdjust colorAdjust = new ColorAdjust();
+		colorAdjust.setContrast(contrast);
 		viewer.setEffect(colorAdjust);
 	}
 	
