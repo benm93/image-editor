@@ -6,7 +6,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="test" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainController">
+<AnchorPane id="test" prefHeight="500.0" prefWidth="800.0" style="-fx-background-color: rgba(77,77,77,1);" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainController">
    <children>
       <Label fx:id="path" layoutX="24.0" layoutY="6.0" prefHeight="17.0" prefWidth="656.0" />
     <AnchorPane layoutX="24.0" layoutY="28.0" minHeight="0.0" minWidth="0.0" prefHeight="445.0" prefWidth="604.0">
@@ -16,14 +16,14 @@
       </AnchorPane>
     <AnchorPane fx:id="ap" layoutX="662.0" layoutY="43.0" minHeight="0.0" minWidth="0.0" prefHeight="158.0" prefWidth="110.0">
          <children>
-            <Slider fx:id="brightnessSlider" blockIncrement="0.1" layoutX="17.0" layoutY="60.0" onMouseDragged="#sliderChange" prefHeight="17.0" prefWidth="79.0" />
-            <Label layoutX="27.0" layoutY="36.0" text="Brightness" textAlignment="CENTER" />
-            <Slider fx:id="contrastSlider" blockIncrement="0.1" layoutX="17.0" layoutY="127.0" onMouseDragged="#contrastChange" prefHeight="17.0" prefWidth="79.0" />
-            <Label layoutX="27.0" layoutY="103.0" text="Contrast" textAlignment="CENTER" />
+            <Slider fx:id="brightnessSlider" blockIncrement="0.1" layoutX="17.0" layoutY="60.0" max="50.0" min="-50.0" onMouseDragged="#sliderChange" prefHeight="17.0" prefWidth="79.0" />
+            <Label layoutX="27.0" layoutY="36.0" text="Brightness" textAlignment="CENTER" textFill="#b4b4b4" />
+            <Slider fx:id="contrastSlider" blockIncrement="0.1" layoutX="17.0" layoutY="127.0" max="50.0" min="-50.0" onMouseDragged="#contrastChange" prefHeight="17.0" prefWidth="79.0" />
+            <Label layoutX="33.0" layoutY="103.0" text="Contrast" textAlignment="CENTER" textFill="#b4b4b4" />
          </children>
       </AnchorPane>
-      <Slider fx:id="saturationSlider" blockIncrement="0.1" layoutX="677.0" layoutY="230.0" onMouseDragged="#saturationChange" prefHeight="17.0" prefWidth="79.0" />
-      <Label layoutX="687.0" layoutY="206.0" text="Saturation" textAlignment="CENTER" />
+      <Slider fx:id="saturationSlider" blockIncrement="0.1" layoutX="677.0" layoutY="230.0" max="50.0" min="-50.0" onMouseDragged="#saturationChange" prefHeight="17.0" prefWidth="79.0" />
+      <Label layoutX="687.0" layoutY="206.0" text="Saturation" textAlignment="CENTER" textFill="#b4b4b4" />
       <Button fx:id="open" layoutX="661.0" layoutY="316.0" mnemonicParsing="false" onMouseClicked="#openFile" text="Open" />
       <Button fx:id="save" layoutX="720.0" layoutY="316.0" mnemonicParsing="false" onMouseClicked="#saveFile" text="Save" />
    </children>
