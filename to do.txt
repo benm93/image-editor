@@ -1,0 +1,8 @@
+Iteration 1:
+Create image viewer area -done
+create file->open -done
+get file name from File returned from picker -done
+use file name to create image and load into viewer -done
+handle changes from brightness slider - done
+create file->save
+take styles from mockup
