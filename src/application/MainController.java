@@ -11,18 +11,27 @@ import javafx.beans.property.DoubleProperty;
 import javafx.collections.ObservableMap;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 
 public class MainController {
+
+	@FXML
+	private Canvas histogram;
 
 	@FXML
 	private AnchorPane ap;
@@ -75,8 +84,31 @@ public class MainController {
 		colorAdjust.setSaturation(saturationValue);
 		colorAdjust.setBrightness(brightnessValue);
 		viewer.setEffect(colorAdjust);
+		
+		Image image = viewer.getImage();
+		PixelReader pixelReader = image.getPixelReader();
+		
+		int[] bins = new int[10];
+		int total = 0;
+		for (int readY = 0; readY < image.getHeight(); readY++) {
+			for (int readX = 0; readX < image.getWidth(); readX++) {
+				total++;
+				Color color = pixelReader.getColor(readX, readY);
+				Double brightness = ((color.getRed() + color.getGreen() + color.getBlue()) / 3) * 10;
+				if(brightness < 10) {
+					bins[brightness.intValue()]++;
+				}
+			}
+		}
+		
+		GraphicsContext gc = histogram.getGraphicsContext2D();
+		
+		for (int i = 0; i < 10; i++) {
+			double height = (double)bins[i] / (double)total * 100;
+			gc.fillRoundRect(i*15, 100-height, 15, height, 3, 3);
+		}
 	}
-	
+
 	@FXML
 	void resetBrightnessSlider(MouseEvent event) {
 		if (event.getClickCount() == 2) {
@@ -106,7 +138,7 @@ public class MainController {
 		double saturation = saturationSlider.getValue() / 400;
 		this.setSaturationValue(saturation);
 	}
-	
+
 	@FXML
 	void contrastChange(MouseEvent event) {
 		double contrast = contrastSlider.getValue() / 800;
@@ -124,9 +156,11 @@ public class MainController {
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Open File");
 		File img = chooser.showOpenDialog(ap.getScene().getWindow());
+
 		String name = "file:" + img.getAbsolutePath();
 		path.setText(name);
 		Image image = new Image(name);
+
 		viewer.setImage(image);
 
 		if (image != null) {
@@ -150,7 +184,7 @@ public class MainController {
 			viewer.setY((viewer.getFitHeight() - h) / 2);
 		}
 	}
-	
+
 	@FXML
 	void saveFile(MouseEvent event) {
 		path.setText("clicked on save");
