@@ -84,28 +84,51 @@ public class MainController {
 		colorAdjust.setSaturation(saturationValue);
 		colorAdjust.setBrightness(brightnessValue);
 		viewer.setEffect(colorAdjust);
-		
+
 		Image image = viewer.getImage();
 		PixelReader pixelReader = image.getPixelReader();
-		
+
+		WritableImage wImage = new WritableImage((int) image.getWidth(), (int) image.getHeight());
+		PixelWriter pw = wImage.getPixelWriter();
+
 		int[] bins = new int[10];
 		int total = 0;
 		for (int readY = 0; readY < image.getHeight(); readY++) {
 			for (int readX = 0; readX < image.getWidth(); readX++) {
 				total++;
 				Color color = pixelReader.getColor(readX, readY);
+				// set sat here(max - min)/max
+				double r = color.getRed();
+				double g = color.getGreen();
+				double b = color.getBlue();
+
+				// if all channels are similar, make no adjustment
+				if (!(Math.abs(r - b) < 0.1 && Math.abs(r - g) < 0.1 && Math.abs(b - g) < 0.1)) {
+					if (g < b && g < r) {
+						g *= 0.96;
+					} else if (b < g && b < r) {
+						b *= 0.96;
+					} else if (r < g && r < b) {
+						r *= 0.96;
+					}
+				}
+
+				Color color2 = Color.color(r, g, b);
+
+				pw.setColor(readX, readY, color2);
 				Double brightness = ((color.getRed() + color.getGreen() + color.getBlue()) / 3) * 10;
-				if(brightness < 10) {
+				if (brightness < 10) {
 					bins[brightness.intValue()]++;
 				}
 			}
 		}
-		
+		viewer.setImage(wImage);
+
 		GraphicsContext gc = histogram.getGraphicsContext2D();
-		
+
 		for (int i = 0; i < 10; i++) {
-			double height = (double)bins[i] / (double)total * 100;
-			gc.fillRoundRect(i*15, 100-height, 15, height, 3, 3);
+			double height = (double) bins[i] / (double) total * 100;
+			gc.fillRoundRect(i * 15, 100 - height, 15, height, 3, 3);
 		}
 	}
 
