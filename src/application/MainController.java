@@ -31,6 +31,15 @@ import javafx.stage.FileChooser;
 public class MainController {
 
 	@FXML
+	private Label brightnessLabel;
+
+	@FXML
+	private Label contrastLabel;
+
+	@FXML
+	private Label saturationLabel;
+
+	@FXML
 	private Canvas histogram;
 
 	@FXML
@@ -63,6 +72,8 @@ public class MainController {
 
 	private double brightnessValue;
 
+	private Image img;
+
 	public void setSaturationValue(double saturationValue) {
 		this.saturationValue = saturationValue;
 		updateSettings();
@@ -79,53 +90,11 @@ public class MainController {
 	}
 
 	private void updateSettings() {
-		ColorAdjust colorAdjust = new ColorAdjust();
-		colorAdjust.setContrast(contrastValue);
-		colorAdjust.setSaturation(saturationValue);
-		colorAdjust.setBrightness(brightnessValue);
-		viewer.setEffect(colorAdjust);
-
-		Image image = viewer.getImage();
-		PixelReader pixelReader = image.getPixelReader();
-
-		WritableImage wImage = new WritableImage((int) image.getWidth(), (int) image.getHeight());
-		PixelWriter pw = wImage.getPixelWriter();
-
-		int[] bins = new int[10];
-		int total = 0;
-		for (int readY = 0; readY < image.getHeight(); readY++) {
-			for (int readX = 0; readX < image.getWidth(); readX++) {
-				total++;
-				Color color = pixelReader.getColor(readX, readY);
-				// set sat here(max - min)/max
-				double r = color.getRed();
-				double g = color.getGreen();
-				double b = color.getBlue();
-
-				// if all channels are similar, make no adjustment
-				if (!(Math.abs(r - b) < 0.1 && Math.abs(r - g) < 0.1 && Math.abs(b - g) < 0.1)) {
-					if (g < b && g < r) {
-						g *= 0.96;
-					} else if (b < g && b < r) {
-						b *= 0.96;
-					} else if (r < g && r < b) {
-						r *= 0.96;
-					}
-				}
-
-				Color color2 = Color.color(r, g, b);
-
-				pw.setColor(readX, readY, color2);
-				Double brightness = ((color.getRed() + color.getGreen() + color.getBlue()) / 3) * 10;
-				if (brightness < 10) {
-					bins[brightness.intValue()]++;
-				}
-			}
-		}
-		viewer.setImage(wImage);
-
+		ImageAdjust ia = new ImageAdjust(saturationValue, contrastValue, brightnessValue, img);
+		viewer.setImage(ia.getImage());
+		int[] bins = ia.getBins();
 		GraphicsContext gc = histogram.getGraphicsContext2D();
-
+		int total = ia.getTotal();
 		for (int i = 0; i < 10; i++) {
 			double height = (double) bins[i] / (double) total * 100;
 			gc.fillRoundRect(i * 15, 100 - height, 15, height, 3, 3);
@@ -143,8 +112,8 @@ public class MainController {
 	@FXML
 	void resetContrastSlider(MouseEvent event) {
 		if (event.getClickCount() == 2) {
-			contrastSlider.setValue(0);
-			this.setContrastValue(0);
+			contrastSlider.setValue(1);
+			this.setContrastValue(1);
 		}
 	}
 
@@ -158,33 +127,42 @@ public class MainController {
 
 	@FXML
 	void saturationChange(MouseEvent event) {
-		double saturation = saturationSlider.getValue() / 400;
+		double saturation = saturationSlider.getValue();
+		saturationLabel.setText(Double.toString(saturation));
 		this.setSaturationValue(saturation);
 	}
 
 	@FXML
 	void contrastChange(MouseEvent event) {
-		double contrast = contrastSlider.getValue() / 800;
+		double contrast = contrastSlider.getValue();
+		contrastLabel.setText(Double.toString(contrast));
 		this.setContrastValue(contrast);
 	}
 
 	@FXML
 	void sliderChange(MouseEvent event) {
-		double brightness = brightnessSlider.getValue() / 100;
+		double brightness = brightnessSlider.getValue();
+		brightnessLabel.setText(Double.toString(brightness));
 		this.setBrightnessValue(brightness);
 	}
 
 	@FXML
 	void openFile(MouseEvent event) {
+		
+		saturationLabel.setText(Double.toString(saturationSlider.getValue()));
+		
+		System.out.println(contrastSlider.getValue());
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Open File");
-		File img = chooser.showOpenDialog(ap.getScene().getWindow());
+		File file = chooser.showOpenDialog(ap.getScene().getWindow());
 
-		String name = "file:" + img.getAbsolutePath();
+		String name = "file:" + file.getAbsolutePath();
 		path.setText(name);
 		Image image = new Image(name);
 
 		viewer.setImage(image);
+
+		img = image;
 
 		if (image != null) {
 			double w = 0;
