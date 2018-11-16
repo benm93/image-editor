@@ -94,10 +94,12 @@ public class MainController {
 		viewer.setImage(ia.getImage());
 		int[] bins = ia.getBins();
 		GraphicsContext gc = histogram.getGraphicsContext2D();
+		gc.clearRect(0, 0, histogram.getWidth(), histogram.getHeight());
 		int total = ia.getTotal();
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 16; i++) {
 			double height = (double) bins[i] / (double) total * 100;
-			gc.fillRoundRect(i * 15, 100 - height, 15, height, 3, 3);
+			height *= 5;
+			gc.fillRoundRect(i * 10, 100 - height, 10, height, 3, 3);
 		}
 	}
 
@@ -184,6 +186,12 @@ public class MainController {
 			viewer.setX((viewer.getFitWidth() - w) / 2);
 			viewer.setY((viewer.getFitHeight() - h) / 2);
 		}
+		
+		saturationValue = 0.0;
+		brightnessValue = 0.0;
+		contrastValue = 1.0;
+		
+		updateSettings();
 	}
 
 	@FXML

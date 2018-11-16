@@ -15,7 +15,7 @@
             <ImageView fx:id="viewer" fitHeight="445.0" fitWidth="604.0" layoutX="5.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true" />
          </children>
       </AnchorPane>
-    <AnchorPane fx:id="ap" layoutX="629.0" layoutY="28.0" minHeight="0.0" minWidth="0.0" prefHeight="457.0" prefWidth="166.0">
+    <AnchorPane fx:id="ap" layoutX="620.0" layoutY="22.0" minHeight="0.0" minWidth="0.0" prefHeight="457.0" prefWidth="166.0">
          <children>
             <Slider fx:id="brightnessSlider" blockIncrement="0.1" layoutX="45.0" layoutY="243.0" max="0.3" min="-0.3" onMouseClicked="#resetBrightnessSlider" onMouseDragged="#sliderChange" prefHeight="17.0" prefWidth="79.0" />
             <Label alignment="CENTER" layoutX="56.0" layoutY="214.0" text="Brightness" textAlignment="CENTER" textFill="#b4b4b4" />
@@ -25,7 +25,7 @@
             <Label layoutX="55.0" layoutY="344.0" text="Saturation" textAlignment="CENTER" textFill="#b4b4b4" />
             <Button fx:id="open" layoutX="32.0" layoutY="406.0" mnemonicParsing="false" onMouseClicked="#openFile" text="Open" />
             <Button fx:id="save" layoutX="92.0" layoutY="406.0" mnemonicParsing="false" onMouseClicked="#saveFile" text="Save" />
-            <Canvas fx:id="histogram" height="181.0" layoutX="-1.0" layoutY="23.0" width="166.0" />
+            <Canvas fx:id="histogram" height="105.0" layoutY="95.0" width="166.0" />
             <Label fx:id="brightnessLabel" layoutX="124.0" layoutY="214.0" text="Label" />
             <Label fx:id="contrastLabel" layoutX="124.0" layoutY="292.0" text="Label" />
             <Label fx:id="saturationLabel" layoutX="124.0" layoutY="373.0" text="Label" />            

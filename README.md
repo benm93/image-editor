@@ -12,6 +12,7 @@
 
 ## Backlog:
 
+- [ ] Shadows and highlights sliders
 - [ ] Handle re-sizing of window
 - [ ] Create presets feature
 - [ ] Filter files in opener to show only images
