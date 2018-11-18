@@ -66,11 +66,21 @@ public class MainController {
 	@FXML
 	private Button save;
 
+	@FXML
+	private Slider highlightsSlider;
+
+	@FXML
+	private Slider shadowsSlider;
+
 	private double saturationValue;
 
 	private double contrastValue;
 
 	private double brightnessValue;
+	
+	private double shadowsValue;	
+
+	private double highlightsValue;
 
 	private Image img;
 
@@ -88,9 +98,29 @@ public class MainController {
 		this.brightnessValue = brightnessValue;
 		updateSettings();
 	}
+	
+	
+
+	public void setShadowsValue(double shadowsValue) {
+		this.shadowsValue = shadowsValue;
+		updateSettings();
+	}
+
+	public void setHighlightsValue(double highlightsValue) {
+		this.highlightsValue = highlightsValue;
+		updateSettings();
+	}
+
+	public double getShadowsValue() {
+		return shadowsValue;
+	}
+
+	public double getHighlightsValue() {
+		return highlightsValue;
+	}
 
 	private void updateSettings() {
-		ImageAdjust ia = new ImageAdjust(saturationValue, contrastValue, brightnessValue, img);
+		ImageAdjust ia = new ImageAdjust(saturationValue, contrastValue, brightnessValue, shadowsValue, highlightsValue, img);
 		viewer.setImage(ia.getImage());
 		int[] bins = ia.getBins();
 		GraphicsContext gc = histogram.getGraphicsContext2D();
@@ -149,10 +179,36 @@ public class MainController {
 	}
 
 	@FXML
+	void shadowsChange(MouseEvent event) {
+		this.setShadowsValue(shadowsSlider.getValue());
+	}
+
+	@FXML
+	void resetShadowsSlider(MouseEvent event) {
+		if (event.getClickCount() == 2) {
+			shadowsSlider.setValue(0);
+			this.setShadowsValue(0);
+		}
+	}
+
+	@FXML
+	void resetHighlightsSlider(MouseEvent event) {
+		if (event.getClickCount() == 2) {
+			highlightsSlider.setValue(0);
+			this.setHighlightsValue(0);
+		}
+	}
+
+	@FXML
+	void highlightsChange(MouseEvent event) {
+		this.setHighlightsValue(highlightsSlider.getValue());
+	}
+
+	@FXML
 	void openFile(MouseEvent event) {
-		
+
 		saturationLabel.setText(Double.toString(saturationSlider.getValue()));
-		
+
 		System.out.println(contrastSlider.getValue());
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Open File");
@@ -186,11 +242,11 @@ public class MainController {
 			viewer.setX((viewer.getFitWidth() - w) / 2);
 			viewer.setY((viewer.getFitHeight() - h) / 2);
 		}
-		
+
 		saturationValue = 0.0;
 		brightnessValue = 0.0;
 		contrastValue = 1.0;
-		
+
 		updateSettings();
 	}
 
