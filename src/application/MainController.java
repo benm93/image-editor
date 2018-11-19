@@ -105,8 +105,7 @@ public class MainController {
 		updateSettings();
 	}
 
-	public void setGammaValue(double gammaValue) {
-		
+	public void setGammaValue(double gammaValue) {		
 		this.gammaValue = 1 - gammaValue;
 		updateSettings();
 	}
