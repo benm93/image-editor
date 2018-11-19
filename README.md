@@ -10,13 +10,14 @@
 - [x] Slider reset on double click
 - [x] Histogram
 - [x] Shadows and highlights sliders
+- [x] Add gamma adjust
 
 ## Backlog:
 
-- [ ] Handle re-sizing of window
+- [ ] Add tone curve
 - [ ] Create presets feature
 - [ ] Filter files in opener to show only images
 - [ ] Layering and selection tools (brush, magic wand)
 - [ ] Edit a proxy if editing at full resolution becomes too expensive
-- [ ] Add tone curve
-- [ ] Add gamma adjust
+- [ ] Handle re-sizing of window
+- [ ] Refactor

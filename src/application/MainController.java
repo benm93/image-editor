@@ -31,15 +31,6 @@ import javafx.stage.FileChooser;
 public class MainController {
 
 	@FXML
-	private Label brightnessLabel;
-
-	@FXML
-	private Label contrastLabel;
-
-	@FXML
-	private Label saturationLabel;
-
-	@FXML
 	private Canvas histogram;
 
 	@FXML
@@ -72,13 +63,18 @@ public class MainController {
 	@FXML
 	private Slider shadowsSlider;
 
+	@FXML
+	private Slider gammaSlider;
+
 	private double saturationValue;
 
 	private double contrastValue;
 
 	private double brightnessValue;
-	
-	private double shadowsValue;	
+
+	private double shadowsValue;
+
+	private double gammaValue;
 
 	private double highlightsValue;
 
@@ -98,8 +94,6 @@ public class MainController {
 		this.brightnessValue = brightnessValue;
 		updateSettings();
 	}
-	
-	
 
 	public void setShadowsValue(double shadowsValue) {
 		this.shadowsValue = shadowsValue;
@@ -108,6 +102,12 @@ public class MainController {
 
 	public void setHighlightsValue(double highlightsValue) {
 		this.highlightsValue = highlightsValue;
+		updateSettings();
+	}
+
+	public void setGammaValue(double gammaValue) {
+		
+		this.gammaValue = 1 - gammaValue;
 		updateSettings();
 	}
 
@@ -120,7 +120,8 @@ public class MainController {
 	}
 
 	private void updateSettings() {
-		ImageAdjust ia = new ImageAdjust(saturationValue, contrastValue, brightnessValue, shadowsValue, highlightsValue, img);
+		ImageAdjust ia = new ImageAdjust(saturationValue, contrastValue, brightnessValue, shadowsValue, highlightsValue,
+				gammaValue, img);
 		viewer.setImage(ia.getImage());
 		int[] bins = ia.getBins();
 		GraphicsContext gc = histogram.getGraphicsContext2D();
@@ -160,22 +161,24 @@ public class MainController {
 	@FXML
 	void saturationChange(MouseEvent event) {
 		double saturation = saturationSlider.getValue();
-		saturationLabel.setText(Double.toString(saturation));
 		this.setSaturationValue(saturation);
 	}
 
 	@FXML
 	void contrastChange(MouseEvent event) {
 		double contrast = contrastSlider.getValue();
-		contrastLabel.setText(Double.toString(contrast));
 		this.setContrastValue(contrast);
 	}
 
 	@FXML
 	void sliderChange(MouseEvent event) {
 		double brightness = brightnessSlider.getValue();
-		brightnessLabel.setText(Double.toString(brightness));
 		this.setBrightnessValue(brightness);
+	}
+
+	@FXML
+	void gammaChange(MouseEvent event) {
+		this.setGammaValue(gammaSlider.getValue());
 	}
 
 	@FXML
@@ -188,6 +191,14 @@ public class MainController {
 		if (event.getClickCount() == 2) {
 			shadowsSlider.setValue(0);
 			this.setShadowsValue(0);
+		}
+	}
+
+	@FXML
+	void resetGammaSlider(MouseEvent event) {
+		if (event.getClickCount() == 2) {
+			gammaSlider.setValue(1.0);
+			this.setGammaValue(1.0);
 		}
 	}
 
@@ -206,9 +217,6 @@ public class MainController {
 
 	@FXML
 	void openFile(MouseEvent event) {
-
-		saturationLabel.setText(Double.toString(saturationSlider.getValue()));
-
 		System.out.println(contrastSlider.getValue());
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Open File");
@@ -246,6 +254,7 @@ public class MainController {
 		saturationValue = 0.0;
 		brightnessValue = 0.0;
 		contrastValue = 1.0;
+		this.setGammaValue(0.0);
 
 		updateSettings();
 	}

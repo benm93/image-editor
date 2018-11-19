@@ -8,21 +8,23 @@ import javafx.scene.paint.Color;
 
 public class ImageAdjust {
 	private double saturation;
-	
+
 	private double contrast;
 
 	private double brightness;
 	
+	private double gamma;
+
 	private double shadows;
-	
+
 	private double highlights;
-	
+
 	private Image image;
-	
+
 	private int[] bins;
-	
+
 	private int total;
-	
+
 	public int[] getBins() {
 		return bins;
 	}
@@ -30,7 +32,7 @@ public class ImageAdjust {
 	public int getTotal() {
 		return total;
 	}
-	
+
 	public void setSaturation(double saturation) {
 		this.saturation = saturation;
 		updateImage();
@@ -49,30 +51,32 @@ public class ImageAdjust {
 	public Image getImage() {
 		return this.image;
 	}
-	
-	ImageAdjust(double saturation, double contrast, double brightness, double shadows, double highlights, Image image) {
+
+	ImageAdjust(double saturation, double contrast, double brightness, double shadows, double highlights, double gamma,
+			Image image) {
 		this.saturation = saturation;
 		this.contrast = contrast;
 		this.brightness = brightness;
 		this.image = image;
 		this.shadows = shadows;
 		this.highlights = highlights;
+		this.gamma = gamma;
 		updateImage();
 	}
-	
+
 	private void updateImage() {
 		PixelReader pixelReader = image.getPixelReader();
-		
-		//do all adjustments here simultaneously
-		//saturation: 
-		//contrast: coefficient
-		//brightness: offset
-		//place these in their own methods
-		
+
+		// do all adjustments here simultaneously
+		// saturation:
+		// contrast: coefficient
+		// brightness: offset
+		// place these in their own methods
+
 //		saturation = 0.1; // -.2 to .2
 //		brightness = 0.05; //-.3 to .3
 //		contrast = 1.3; //.8 to 1.2
-		
+
 		WritableImage wImage = new WritableImage((int) image.getWidth(), (int) image.getHeight());
 		PixelWriter pw = wImage.getPixelWriter();
 		bins = new int[16];
@@ -84,7 +88,7 @@ public class ImageAdjust {
 				double r = color.getRed();
 				double g = color.getGreen();
 				double b = color.getBlue();
-				
+
 				double s = saturation;
 
 				// if all channels are similar, make no adjustment
@@ -97,24 +101,29 @@ public class ImageAdjust {
 						r -= s;
 					}
 				}
-				
-				//apply brightness and contrast
+
+				// apply brightness and contrast
 				r = r * contrast + brightness;
 				g = g * contrast + brightness;
 				b = b * contrast + brightness;
-				
-				//apply adjustments to shadows and highlights
-				if (((r + b + g) /3) > 0.7) {
+
+				// apply adjustments to shadows and highlights
+				if (((r + b + g) / 3) > 0.7) {
 					r += highlights;
 					g += highlights;
 					b += highlights;
-				} else if (((r + b + g) /3) < 0.3) {
+				} else if (((r + b + g) / 3) < 0.3) {
 					r += shadows;
 					g += shadows;
 					b += shadows;
-				}				
+				}
 				
-				//check for clipping - white
+				//gamma adjust 
+				r = Math.pow(r, gamma);
+				g = Math.pow(g, gamma);
+				b = Math.pow(b, gamma);
+
+				// check for clipping - white
 				if (r > 1.0) {
 					r = 1.0;
 				}
@@ -124,8 +133,8 @@ public class ImageAdjust {
 				if (b > 1.0) {
 					b = 1.0;
 				}
-				
-				//check for clipping - black
+
+				// check for clipping - black
 				if (r < 0.0) {
 					r = 0.0;
 				}
@@ -135,7 +144,7 @@ public class ImageAdjust {
 				if (b < 0.0) {
 					b = 0.0;
 				}
-				
+
 				Color color2 = Color.color(r, g, b);
 
 				pw.setColor(readX, readY, color2);
@@ -146,12 +155,13 @@ public class ImageAdjust {
 			}
 		}
 		image = wImage;
-		
-		//pass histo data to a different object which will be in charge of drawing the histo
-		
-		//should make a histogram class which extends ImageView and which has a drawHisto method
-		
-		
+
+		// pass histo data to a different object which will be in charge of drawing the
+		// histo
+
+		// should make a histogram class which extends ImageView and which has a
+		// drawHisto method
+
 	}
 
 }

@@ -15,7 +15,7 @@
             <ImageView fx:id="viewer" fitHeight="445.0" fitWidth="604.0" layoutX="5.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true" />
          </children>
       </AnchorPane>
-    <AnchorPane fx:id="ap" layoutX="620.0" layoutY="22.0" minHeight="0.0" minWidth="0.0" prefHeight="457.0" prefWidth="166.0">
+    <AnchorPane fx:id="ap" layoutX="620.0" minHeight="0.0" minWidth="0.0" prefHeight="493.0" prefWidth="166.0">
          <children>
             <Slider fx:id="brightnessSlider" blockIncrement="0.1" layoutX="45.0" layoutY="243.0" max="0.3" min="-0.3" onMouseClicked="#resetBrightnessSlider" onMouseDragged="#sliderChange" prefHeight="17.0" prefWidth="79.0" />
             <Label alignment="CENTER" layoutX="56.0" layoutY="214.0" text="Brightness" textAlignment="CENTER" textFill="#b4b4b4" />
@@ -23,16 +23,15 @@
             <Label layoutX="60.0" layoutY="283.0" text="Contrast" textAlignment="CENTER" textFill="#b4b4b4" />
             <Slider fx:id="saturationSlider" blockIncrement="0.1" layoutX="43.0" layoutY="373.0" max="0.1" min="-0.1" onMouseClicked="#resetSatSlider" onMouseDragged="#saturationChange" prefHeight="17.0" prefWidth="79.0" />
             <Label layoutX="55.0" layoutY="344.0" text="Saturation" textAlignment="CENTER" textFill="#b4b4b4" />
-            <Button fx:id="open" layoutX="32.0" layoutY="406.0" mnemonicParsing="false" onMouseClicked="#openFile" text="Open" />
-            <Button fx:id="save" layoutX="92.0" layoutY="406.0" mnemonicParsing="false" onMouseClicked="#saveFile" text="Save" />
+            <Button fx:id="open" layoutX="32.0" layoutY="463.0" mnemonicParsing="false" onMouseClicked="#openFile" text="Open" />
+            <Button fx:id="save" layoutX="92.0" layoutY="463.0" mnemonicParsing="false" onMouseClicked="#saveFile" text="Save" />
             <Canvas fx:id="histogram" height="105.0" width="166.0" />
-            <Label fx:id="brightnessLabel" layoutX="124.0" layoutY="214.0" text="Label" />
-            <Label fx:id="contrastLabel" layoutX="124.0" layoutY="292.0" text="Label" />
-            <Label fx:id="saturationLabel" layoutX="124.0" layoutY="373.0" text="Label" />
             <Label alignment="CENTER" layoutX="55.0" layoutY="168.0" text="Highlights" textAlignment="CENTER" textFill="#b4b4b4" />
             <Label alignment="CENTER" layoutX="57.0" layoutY="113.0" text="Shadows" textAlignment="CENTER" textFill="#b4b4b4" />
             <Slider fx:id="highlightsSlider" blockIncrement="0.1" layoutX="45.0" layoutY="185.0" max="0.3" min="-0.3" onMouseClicked="#resetHighlightsSlider" onMouseDragged="#highlightsChange" prefHeight="17.0" prefWidth="79.0" />
-            <Slider fx:id="shadowsSlider" blockIncrement="0.1" layoutX="45.0" layoutY="138.0" max="0.3" min="-0.3" onMouseClicked="#resetShadowsSlider" onMouseDragged="#shadowsChange" prefHeight="17.0" prefWidth="79.0" />            
+            <Slider fx:id="shadowsSlider" blockIncrement="0.1" layoutX="45.0" layoutY="138.0" max="0.3" min="-0.3" onMouseClicked="#resetShadowsSlider" onMouseDragged="#shadowsChange" prefHeight="17.0" prefWidth="79.0" />
+            <Slider fx:id="gammaSlider" blockIncrement="0.1" layoutX="43.0" layoutY="425.0" max="0.3" min="-0.3" onMouseClicked="#resetGammaSlider" onMouseDragged="#gammaChange" prefHeight="17.0" prefWidth="79.0" />
+            <Label layoutX="62.0" layoutY="399.0" text="Gamma" textAlignment="CENTER" textFill="#b4b4b4" />            
          </children>
       </AnchorPane>
    </children>
