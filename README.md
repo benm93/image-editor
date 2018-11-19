@@ -2,7 +2,6 @@
 
 ## Current features:
 
-
 - [x] Design saturation, contrast, brightness algorithms
 - [x] Open image and load into viewer
 - [x] Edit with brightness, contrast, saturation sliders
@@ -20,4 +19,5 @@
 - [ ] Layering and selection tools (brush, magic wand)
 - [ ] Edit a proxy if editing at full resolution becomes too expensive
 - [ ] Handle re-sizing of window
+- [ ] Sharpening
 - [ ] Refactor
