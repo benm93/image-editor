@@ -2,18 +2,22 @@ package application;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.ObservableMap;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.effect.ColorAdjust;
@@ -53,6 +57,7 @@ public class MainController {
 
 	@FXML
 	private Slider saturationSlider;
+	DoubleProperty sprop = new SimpleDoubleProperty();
 
 	@FXML
 	private Button save;
@@ -65,6 +70,9 @@ public class MainController {
 
 	@FXML
 	private Slider gammaSlider;
+	
+    @FXML
+    private ComboBox<String> presetPicker;
 
 	private double saturationValue;
 
@@ -105,7 +113,7 @@ public class MainController {
 		updateSettings();
 	}
 
-	public void setGammaValue(double gammaValue) {		
+	public void setGammaValue(double gammaValue) {
 		this.gammaValue = 1 - gammaValue;
 		updateSettings();
 	}
@@ -255,7 +263,18 @@ public class MainController {
 		contrastValue = 1.0;
 		this.setGammaValue(0.0);
 
-		updateSettings();
+		Connection c = null;
+
+		try {
+			Class.forName("org.sqlite.JDBC");
+			c = DriverManager.getConnection("jdbc:sqlite:test.db");
+		} catch (Exception e) {
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		System.out.println("Opened database successfully");
+		
+		presetPicker.getItems().add("Choice 1");		
 	}
 
 	@FXML
