@@ -60,22 +60,12 @@ public class ImageAdjust {
 		this.image = image;
 		this.shadows = shadows;
 		this.highlights = highlights;
-		this.gamma = gamma;
+		this.gamma = 1 - gamma;
 		updateImage();
 	}
 
 	private void updateImage() {
 		PixelReader pixelReader = image.getPixelReader();
-
-		// do all adjustments here simultaneously
-		// saturation:
-		// contrast: coefficient
-		// brightness: offset
-		// place these in their own methods
-
-//		saturation = 0.1; // -.2 to .2
-//		brightness = 0.05; //-.3 to .3
-//		contrast = 1.3; //.8 to 1.2
 
 		WritableImage wImage = new WritableImage((int) image.getWidth(), (int) image.getHeight());
 		PixelWriter pw = wImage.getPixelWriter();
@@ -118,7 +108,7 @@ public class ImageAdjust {
 					b += shadows;
 				}
 				
-				//gamma adjust 
+				//gamma adjust
 				r = Math.pow(r, gamma);
 				g = Math.pow(g, gamma);
 				b = Math.pow(b, gamma);
@@ -155,12 +145,6 @@ public class ImageAdjust {
 			}
 		}
 		image = wImage;
-
-		// pass histo data to a different object which will be in charge of drawing the
-		// histo
-
-		// should make a histogram class which extends ImageView and which has a
-		// drawHisto method
 
 	}
 
