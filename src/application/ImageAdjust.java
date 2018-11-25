@@ -52,15 +52,14 @@ public class ImageAdjust {
 		return this.image;
 	}
 
-	ImageAdjust(double saturation, double contrast, double brightness, double shadows, double highlights, double gamma,
-			Image image) {
-		this.saturation = saturation;
-		this.contrast = contrast;
-		this.brightness = brightness;
+	ImageAdjust(Filter f, Image image) {
+		this.saturation = f.getSaturation();
+		this.contrast = f.getContrast();
+		this.brightness = f.getBrightness();
 		this.image = image;
-		this.shadows = shadows;
-		this.highlights = highlights;
-		this.gamma = 1 - gamma;
+		this.shadows = f.getShadows();
+		this.highlights = f.getHighlights();
+		this.gamma = 1 - f.getGamma();
 		updateImage();
 	}
 
