@@ -2,36 +2,29 @@ package application;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
-
 import javax.imageio.ImageIO;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.DoubleProperty;
-import javafx.collections.ObservableMap;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Slider;
-import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelReader;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 
 public class MainController {
 
 	@FXML
 	private Canvas histogram;
+	
+	private Model model;
 
 	@FXML
 	private AnchorPane ap;
@@ -41,9 +34,6 @@ public class MainController {
 
 	@FXML
 	private Button open;
-
-	@FXML
-	private Label path;
 
 	@FXML
 	private Slider brightnessSlider;
@@ -66,61 +56,19 @@ public class MainController {
 	@FXML
 	private Slider gammaSlider;
 
-	private double saturationValue;
-
-	private double contrastValue;
-
-	private double brightnessValue;
-
-	private double shadowsValue;
-
-	private double gammaValue;
-
-	private double highlightsValue;
+	@FXML
+	private ComboBox<Filter> presetPicker;
 
 	private Image img;
 
-	public void setSaturationValue(double saturationValue) {
-		this.saturationValue = saturationValue;
-		updateSettings();
-	}
-
-	public void setContrastValue(double contrastValue) {
-		this.contrastValue = contrastValue;
-		updateSettings();
-	}
-
-	public void setBrightnessValue(double brightnessValue) {
-		this.brightnessValue = brightnessValue;
-		updateSettings();
-	}
-
-	public void setShadowsValue(double shadowsValue) {
-		this.shadowsValue = shadowsValue;
-		updateSettings();
-	}
-
-	public void setHighlightsValue(double highlightsValue) {
-		this.highlightsValue = highlightsValue;
-		updateSettings();
-	}
-
-	public void setGammaValue(double gammaValue) {		
-		this.gammaValue = 1 - gammaValue;
-		updateSettings();
-	}
-
-	public double getShadowsValue() {
-		return shadowsValue;
-	}
-
-	public double getHighlightsValue() {
-		return highlightsValue;
-	}
-
 	private void updateSettings() {
-		ImageAdjust ia = new ImageAdjust(saturationValue, contrastValue, brightnessValue, shadowsValue, highlightsValue,
-				gammaValue, img);
+		Filter f = new Filter("temp", contrastSlider.getValue(), brightnessSlider.getValue(), saturationSlider.getValue(), 
+				 shadowsSlider.getValue(), highlightsSlider.getValue(),
+				gammaSlider.getValue());
+		ImageAdjust ia = new ImageAdjust(f, img);
+		System.out.println(
+				saturationSlider.getValue() + " " + contrastSlider.getValue() + " " + brightnessSlider.getValue() + " "
+						+ shadowsSlider.getValue() + " " + highlightsSlider.getValue() + " " + gammaSlider.getValue());
 		viewer.setImage(ia.getImage());
 		int[] bins = ia.getBins();
 		GraphicsContext gc = histogram.getGraphicsContext2D();
@@ -132,20 +80,56 @@ public class MainController {
 			gc.fillRoundRect(i * 10, 100 - height, 10, height, 3, 3);
 		}
 	}
+	
+	private void loadFilter(Filter f) {
+		contrastSlider.setValue(f.getContrast());
+		highlightsSlider.setValue(f.getHighlights());
+		shadowsSlider.setValue(f.getShadows());
+		brightnessSlider.setValue(f.getBrightness());
+		gammaSlider.setValue(f.getGamma());
+		saturationSlider.setValue(f.getSaturation());
+		/*
+		"temp", contrastSlider.getValue(), brightnessSlider.getValue(), saturationSlider.getValue(), 
+		 shadowsSlider.getValue(), highlightsSlider.getValue(),
+		gammaSlider.getValue()
+		*/
+	}
+	
+	/*
+	@FXML
+	void resetSlider(MouseEvent event) {
+		Slider obj = (Slider)event.getSource();
+		if(obj.getId() == "contrastSlider") {
+			obj.setValue(1.0);
+		}
+		else {
+			obj.setValue(0.0);
+		}
+	}
+	*/
+	
+	@FXML
+	void loadPreset(ActionEvent event) {
+		Object f = presetPicker.getValue();
+		if (f instanceof Filter) {
+	        Filter filter = (Filter) f;
+	        loadFilter(filter);
+	    }
+		
+	}
 
+	
 	@FXML
 	void resetBrightnessSlider(MouseEvent event) {
 		if (event.getClickCount() == 2) {
 			brightnessSlider.setValue(0);
-			this.setBrightnessValue(0);
 		}
 	}
 
 	@FXML
 	void resetContrastSlider(MouseEvent event) {
 		if (event.getClickCount() == 2) {
-			contrastSlider.setValue(1);
-			this.setContrastValue(1);
+			contrastSlider.setValue(1.0);
 		}
 	}
 
@@ -153,51 +137,20 @@ public class MainController {
 	void resetSatSlider(MouseEvent event) {
 		if (event.getClickCount() == 2) {
 			saturationSlider.setValue(0);
-			this.setSaturationValue(0);
 		}
 	}
-
-	@FXML
-	void saturationChange(MouseEvent event) {
-		double saturation = saturationSlider.getValue();
-		this.setSaturationValue(saturation);
-	}
-
-	@FXML
-	void contrastChange(MouseEvent event) {
-		double contrast = contrastSlider.getValue();
-		this.setContrastValue(contrast);
-	}
-
-	@FXML
-	void sliderChange(MouseEvent event) {
-		double brightness = brightnessSlider.getValue();
-		this.setBrightnessValue(brightness);
-	}
-
-	@FXML
-	void gammaChange(MouseEvent event) {
-		this.setGammaValue(gammaSlider.getValue());
-	}
-
-	@FXML
-	void shadowsChange(MouseEvent event) {
-		this.setShadowsValue(shadowsSlider.getValue());
-	}
-
+	
 	@FXML
 	void resetShadowsSlider(MouseEvent event) {
 		if (event.getClickCount() == 2) {
 			shadowsSlider.setValue(0);
-			this.setShadowsValue(0);
 		}
 	}
-
+	
 	@FXML
 	void resetGammaSlider(MouseEvent event) {
 		if (event.getClickCount() == 2) {
-			gammaSlider.setValue(1.0);
-			this.setGammaValue(1.0);
+			gammaSlider.setValue(0.0);
 		}
 	}
 
@@ -205,13 +158,7 @@ public class MainController {
 	void resetHighlightsSlider(MouseEvent event) {
 		if (event.getClickCount() == 2) {
 			highlightsSlider.setValue(0);
-			this.setHighlightsValue(0);
 		}
-	}
-
-	@FXML
-	void highlightsChange(MouseEvent event) {
-		this.setHighlightsValue(highlightsSlider.getValue());
 	}
 
 	@FXML
@@ -222,7 +169,6 @@ public class MainController {
 		File file = chooser.showOpenDialog(ap.getScene().getWindow());
 
 		String name = "file:" + file.getAbsolutePath();
-		path.setText(name);
 		Image image = new Image(name);
 
 		viewer.setImage(image);
@@ -250,17 +196,55 @@ public class MainController {
 			viewer.setY((viewer.getFitHeight() - h) / 2);
 		}
 
-		saturationValue = 0.0;
-		brightnessValue = 0.0;
-		contrastValue = 1.0;
-		this.setGammaValue(0.0);
-
+		//get filters DS
+		model = new Model();
+		ObservableList<Filter> lst = model.getLst();
+		//bind list to combo box
+		presetPicker.setItems(lst);
+		
+		//Filter f = presetPicker.getValue();
+		//make a FilterProperty class
+		//call presetPicker.valueProperty()
+		//make a listener which draws up the selected filter
+		
+		
+		saturationSlider.setValue(0.0);
+		brightnessSlider.setValue(0.0);
+		contrastSlider.setValue(1.0);
+		gammaSlider.setValue(0.0);
+		highlightsSlider.setValue(0.0);
+		shadowsSlider.setValue(0.0);
+		
 		updateSettings();
+
+		saturationSlider.valueProperty().addListener((observable, oldVal, newVal) -> {
+			updateSettings();
+		});
+
+		brightnessSlider.valueProperty().addListener((observable, oldVal, newVal) -> {
+			updateSettings();
+		});
+
+		contrastSlider.valueProperty().addListener((observable, oldVal, newVal) -> {
+			updateSettings();
+		});
+
+		gammaSlider.valueProperty().addListener((observable, oldVal, newVal) -> {
+			updateSettings();
+		});
+
+		highlightsSlider.valueProperty().addListener((observable, oldVal, newVal) -> {
+			updateSettings();
+		});
+
+		shadowsSlider.valueProperty().addListener((observable, oldVal, newVal) -> {
+			updateSettings();
+		});
+
 	}
 
 	@FXML
 	void saveFile(MouseEvent event) {
-		path.setText("clicked on save");
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Save Image");
 		File file = fileChooser.showSaveDialog(ap.getScene().getWindow());

@@ -10,11 +10,11 @@
 - [x] Histogram
 - [x] Shadows and highlights sliders
 - [x] Add gamma adjust
+- [x] Create presets feature
 
 ## Backlog:
 
 - [ ] Add tone curve
-- [ ] Create presets feature
 - [ ] Filter files in opener to show only images
 - [ ] Layering and selection tools (brush, magic wand)
 - [ ] Edit a proxy if editing at full resolution becomes too expensive
