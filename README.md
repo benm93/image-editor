@@ -21,3 +21,7 @@
 - [ ] Handle re-sizing of window
 - [ ] Sharpening
 - [ ] Refactor
+
+## Demo:
+
+![Demo Animation](./demo/demo.jpg?raw=true)
