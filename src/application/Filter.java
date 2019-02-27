@@ -13,6 +13,8 @@ public class Filter {
 	public String getName() {
 		return name;
 	}
+	
+	//comment
 
 	public void setName(String name) {
 		this.name = name;
